@@ -1,5 +1,3 @@
-import 'package:todo/home/home_screen.dart';
-
 final List<Map<String, dynamic>> dummyData = [
   {
     'title': 'Urgent Important',
@@ -142,3 +140,37 @@ final List<Map<String, dynamic>> dummyData = [
     ],
   },
 ];
+
+final Map<String, String> categoryImageMap = {
+  'Office': 'assets/Office.jpg',
+  'Health': 'assets/Health.jpg',
+  'Finance': 'assets/finance.jpg',
+  'Home': 'assets/Home.jpg',
+  'Personal': 'assets/Personal.jpg',
+  'Career': 'assets/Career.jpg',
+  'Self Development': 'assets/Self_Development.jpg',
+  'Leisure': 'assets/Leisure.jpg',
+  'Fun': 'assets/Fun.jpg',
+};
+
+class ElementTask {
+  final String name;
+  final String color;
+  final bool isDone;
+  final DateTime startTime;
+  final DateTime deadline;
+  final String category;
+  final DateTime targetDate;
+  final DateTime expectedSubmitDate;
+
+  ElementTask({
+    required this.name,
+    required this.color,
+    required this.isDone,
+    required this.startTime,
+    required this.deadline,
+    required this.category,
+    required this.targetDate,
+    required this.expectedSubmitDate,
+  });
+}

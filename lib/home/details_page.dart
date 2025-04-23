@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/home/home_screen.dart';
+import 'package:todo/data/todo.dart';
 import 'package:todo/logic/todo_manager.dart';
 
 class DetailsPage extends StatelessWidget {
