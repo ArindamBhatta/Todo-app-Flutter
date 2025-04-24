@@ -1,46 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:todo/data/todo.dart';
-import 'package:todo/home/home_screen.dart';
 
 class TaskProvider with ChangeNotifier {
-  final List<Map<String, dynamic>> _categories = dummyData;
+  final List<ElementTask> _tasks = dummyData;
 
-  List<Map<String, dynamic>> get categories => _categories;
+  List<ElementTask> get tasks => [..._tasks];
 
-  void toggleTaskDone(String categoryTitle, int taskIndex) {
-    final task =
-        _categories.firstWhere(
-          (element) => element['title'] == categoryTitle,
-        )['tasks'][taskIndex];
-    task.isDone = !task.isDone;
+  void addTask(ElementTask task) {
+    _tasks.add(task);
     notifyListeners();
   }
 
-  void deleteTask(String categoryTitle, int taskIndex) {
-    _categories
-        .firstWhere((element) => element['title'] == categoryTitle)['tasks']
-        .removeAt(taskIndex);
-    notifyListeners();
+  void updateTask(int index, ElementTask updatedTask) {
+    if (index >= 0 && index < _tasks.length) {
+      _tasks[index] = updatedTask;
+      notifyListeners();
+    }
   }
 
-  void updateTask(
-    String categoryTitle,
-    int taskIndex,
-    ElementTask updatedTask,
-  ) {
-    _categories.firstWhere(
-          (element) => element['title'] == categoryTitle,
-        )['tasks'][taskIndex] =
-        updatedTask;
-    notifyListeners();
+  void deleteTask(int index) {
+    if (index >= 0 && index < _tasks.length) {
+      _tasks.removeAt(index);
+      notifyListeners();
+    }
   }
 
-  void addTaskToCategory(String categoryTitle, ElementTask task) {
-    final category = _categories.firstWhere(
-      (element) => element['title'] == categoryTitle,
-      orElse: () => throw Exception("Category not found"),
-    );
-    (category['tasks'] as List<ElementTask>).add(task);
-    notifyListeners();
+  void toggleTaskStatus(int index) {
+    if (index >= 0 && index < _tasks.length) {
+      final task = _tasks[index];
+      _tasks[index] = ElementTask(
+        name: task.name,
+        urgencyLevel: task.urgencyLevel,
+        color: task.color,
+        isPending: !task.isPending,
+        startTime: task.startTime,
+        absoluteDeadline: task.absoluteDeadline,
+        desireDeadline: task.desireDeadline,
+        category: task.category,
+      );
+      notifyListeners();
+    }
   }
 }

@@ -33,8 +33,8 @@ class DetailsPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text("Category: ${task.category}"),
             Text("Start Time: ${task.startTime}"),
-            Text("Deadline: ${task.deadline}"),
-            Text("Target Date: ${task.targetDate}"),
+            Text("Deadline: ${task.absoluteDeadline}"),
+            Text("Target Date: ${task.desireDeadline}"),
             Text("Expected Submit: ${task.expectedSubmitDate}"),
             const SizedBox(height: 20),
             Row(
@@ -43,9 +43,9 @@ class DetailsPage extends StatelessWidget {
                   onPressed: () {
                     taskProvider.toggleTaskDone(categoryTitle, taskIndex);
                   },
-                  icon: Icon(task.isDone ? Icons.undo : Icons.check),
+                  icon: Icon(task.isPending ? Icons.undo : Icons.check),
                   label: Text(
-                    task.isDone ? 'Mark Incomplete' : 'Mark Complete',
+                    task.isPending ? 'Mark Incomplete' : 'Mark Complete',
                   ),
                 ),
                 const SizedBox(width: 10),

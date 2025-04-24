@@ -1,145 +1,48 @@
-final List<Map<String, dynamic>> dummyData = [
-  {
-    'title': 'Urgent Important',
-    'tasks': [
-      ElementTask(
-        name: 'Finish project proposal',
-        color: '0xFF9C27B0',
-        isDone: false,
-        startTime: DateTime.now().subtract(Duration(hours: 2)),
-        deadline: DateTime.now().add(Duration(hours: 3)),
-        category: 'Office',
-        targetDate: DateTime.now().add(Duration(days: 1)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 2)),
-      ),
-      ElementTask(
-        name: 'Call the doctor',
-        color: '0xFF4CAF50',
-        isDone: false,
-        startTime: DateTime.now().add(Duration(hours: 1)),
-        deadline: DateTime.now().add(Duration(hours: 4)),
-        category: 'Health',
-        targetDate: DateTime.now().add(Duration(days: 1)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 1)),
-      ),
-      ElementTask(
-        name: 'Pay electricity bill',
-        color: '0xFFFF9800',
-        isDone: false,
-        startTime: DateTime.now(),
-        deadline: DateTime.now().add(Duration(hours: 5)),
-        category: 'Finance',
-        targetDate: DateTime.now().add(Duration(days: 2)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 3)),
-      ),
-    ],
-  },
-  {
-    'title': 'Not Important Urgent',
-    'tasks': [
-      ElementTask(
-        name: 'Water the plants',
-        color: '0xFF9C27B0',
-        isDone: false,
-        startTime: DateTime.now(),
-        deadline: DateTime.now().add(Duration(hours: 2)),
-        category: 'Home',
-        targetDate: DateTime.now().add(Duration(days: 1)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 1)),
-      ),
-      ElementTask(
-        name: 'Respond to party invite',
-        color: '0xFF3F51B5',
-        isDone: true,
-        startTime: DateTime.now().subtract(Duration(hours: 1)),
-        deadline: DateTime.now().add(Duration(hours: 1)),
-        category: 'Personal',
-        targetDate: DateTime.now(),
-        expectedSubmitDate: DateTime.now(),
-      ),
-      ElementTask(
-        name: 'Return online order',
-        color: '0xFFFF5722',
-        isDone: false,
-        startTime: DateTime.now().subtract(Duration(hours: 2)),
-        deadline: DateTime.now().add(Duration(hours: 6)),
-        category: 'Home',
-        targetDate: DateTime.now().add(Duration(days: 1)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 2)),
-      ),
-    ],
-  },
-  {
-    'title': 'Important Not Urgent',
-    'tasks': [
-      ElementTask(
-        name: 'Read financial planning book',
-        color: '0xFF8BC34A',
-        isDone: false,
-        startTime: DateTime.now().add(Duration(hours: 2)),
-        deadline: DateTime.now().add(Duration(days: 3)),
-        category: 'Finance',
-        targetDate: DateTime.now().add(Duration(days: 3)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 4)),
-      ),
-      ElementTask(
-        name: 'Update LinkedIn profile',
-        color: '0xFFCDDC39',
-        isDone: true,
-        startTime: DateTime.now().subtract(Duration(days: 1)),
-        deadline: DateTime.now().add(Duration(days: 1)),
-        category: 'Career',
-        targetDate: DateTime.now().add(Duration(days: 2)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 2)),
-      ),
-      ElementTask(
-        name: 'Start online course',
-        color: '0xFF607D8B',
-        isDone: false,
-        startTime: DateTime.now().add(Duration(days: 1)),
-        deadline: DateTime.now().add(Duration(days: 7)),
-        category: 'Self Development',
-        targetDate: DateTime.now().add(Duration(days: 5)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 8)),
-      ),
-    ],
-  },
-  {
-    'title': 'Not Important Not Urgent',
-    'tasks': [
-      ElementTask(
-        name: 'Watch Netflix series',
-        color: '0xFF9E9E9E',
-        isDone: false,
-        startTime: DateTime.now().add(Duration(hours: 4)),
-        deadline: DateTime.now().add(Duration(days: 2)),
-        category: 'Leisure',
-        targetDate: DateTime.now().add(Duration(days: 3)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 4)),
-      ),
-      ElementTask(
-        name: 'Organize photo gallery',
-        color: '0xFF795548',
-        isDone: false,
-        startTime: DateTime.now().add(Duration(days: 1)),
-        deadline: DateTime.now().add(Duration(days: 5)),
-        category: 'Personal',
-        targetDate: DateTime.now().add(Duration(days: 5)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 6)),
-      ),
-      ElementTask(
-        name: 'Try a new game',
-        color: '0xFF673AB7',
-        isDone: false,
-        startTime: DateTime.now(),
-        deadline: DateTime.now().add(Duration(days: 3)),
-        category: 'Fun',
-        targetDate: DateTime.now().add(Duration(days: 4)),
-        expectedSubmitDate: DateTime.now().add(Duration(days: 5)),
-      ),
-    ],
-  },
-];
+import 'package:flutter/material.dart';
+
+import 'package:uuid/uuid.dart';
+
+const Uuid uuid = Uuid();
+
+enum UrgencyLevel {
+  urgentImportant("Urgent Important"),
+  notUrgentImportant("Not Urgent Important"),
+  notImportantUrgent("Not Important Urgent"),
+  notImportantNotUrgent("Not Important Not Urgent");
+
+  final String value;
+  const UrgencyLevel(this.value);
+}
+
+IconData getIconData(String urgencyLevel) {
+  switch (urgencyLevel) {
+    case 'Urgent Important':
+      return Icons.priority_high;
+    case 'Not Urgent Important':
+      return Icons.check_circle_outline;
+    case 'Not Important Urgent':
+      return Icons.access_alarm;
+    case 'Not Important Not Urgent':
+      return Icons.check_circle;
+    default:
+      return Icons.error;
+  }
+}
+
+enum Category {
+  office("Office"),
+  health("Health"),
+  finance("Finance"),
+  home("Home"),
+  personal("Personal"),
+  career("Career"),
+  self("Self"),
+  leisure("Leisure"),
+  fun("Fun");
+
+  final String value;
+  const Category(this.value);
+}
 
 final Map<String, String> categoryImageMap = {
   'Office': 'assets/Office.jpg',
@@ -153,24 +56,103 @@ final Map<String, String> categoryImageMap = {
   'Fun': 'assets/Fun.jpg',
 };
 
+var dummyData = [
+  ElementTask(
+    isPending: true,
+    name: 'Finish project proposal',
+    urgencyLevel: UrgencyLevel.urgentImportant.value,
+    color: Color(0xFFFF0000),
+    startTime: DateTime.now().subtract(Duration(hours: 2)),
+    absoluteDeadline: DateTime.now().add(Duration(hours: 3)),
+    category: Category.office.value,
+    desireDeadline: DateTime.now().add(Duration(days: 1)),
+  ),
+
+  ElementTask(
+    isPending: true,
+    name: 'Pay electricity bill',
+    urgencyLevel: UrgencyLevel.notImportantUrgent.value,
+    category: Category.finance.value,
+    color: Color.fromARGB(255, 247, 104, 104),
+    startTime: DateTime.now(),
+    absoluteDeadline: DateTime.now().add(Duration(hours: 5)),
+    desireDeadline: DateTime.now().add(Duration(days: 2)),
+  ),
+
+  ElementTask(
+    name: 'Water the plants',
+    urgencyLevel: UrgencyLevel.urgentImportant.value,
+    color: Color(0xFFFF0000),
+    isPending: true,
+    startTime: DateTime.now(),
+    absoluteDeadline: DateTime.now().add(Duration(hours: 2)),
+    category: Category.home.value,
+    desireDeadline: DateTime.now().add(Duration(days: 1)),
+  ),
+
+  ElementTask(
+    name: 'Return online order',
+    urgencyLevel: UrgencyLevel.urgentImportant.value,
+    color: Color(0xFFFF0000),
+    isPending: true,
+    startTime: DateTime.now().subtract(Duration(hours: 2)),
+    absoluteDeadline: DateTime.now().add(Duration(hours: 6)),
+    category: Category.personal.value,
+    desireDeadline: DateTime.now().add(Duration(days: 1)),
+  ),
+
+  ElementTask(
+    name: 'Update LinkedIn profile',
+    urgencyLevel: UrgencyLevel.notUrgentImportant.value,
+    color: Color(0xFFFF0000),
+    isPending: true,
+    startTime: DateTime.now().subtract(Duration(days: 1)),
+    absoluteDeadline: DateTime.now().add(Duration(days: 1)),
+    category: Category.career.value,
+    desireDeadline: DateTime.now().add(Duration(days: 2)),
+  ),
+
+  ElementTask(
+    name: 'Organize photo gallery',
+    urgencyLevel: UrgencyLevel.notImportantNotUrgent.value,
+    color: Color(0xFFFF0000),
+    isPending: true,
+    startTime: DateTime.now().add(Duration(days: 1)),
+    absoluteDeadline: DateTime.now().add(Duration(days: 5)),
+    category: Category.self.value,
+    desireDeadline: DateTime.now().add(Duration(days: 5)),
+  ),
+  ElementTask(
+    name: 'Try a new game',
+    urgencyLevel: UrgencyLevel.notImportantNotUrgent.value,
+    color: Color(0xFFFF0000),
+    isPending: false,
+    startTime: DateTime.now(),
+    absoluteDeadline: DateTime.now().add(Duration(days: 3)),
+    category: Category.fun.value,
+    desireDeadline: DateTime.now().add(Duration(days: 4)),
+  ),
+];
+
 class ElementTask {
-  final String name;
-  final String color;
-  final bool isDone;
-  final DateTime startTime;
-  final DateTime deadline;
+  final String id;
+  final bool isPending;
+  final String urgencyLevel;
   final String category;
-  final DateTime targetDate;
-  final DateTime expectedSubmitDate;
+  final String name;
+  final DateTime startTime;
+  final Color color;
+  final DateTime absoluteDeadline;
+  final DateTime desireDeadline;
 
   ElementTask({
+    required this.isPending,
+    required this.urgencyLevel,
+    required this.category,
     required this.name,
     required this.color,
-    required this.isDone,
     required this.startTime,
-    required this.deadline,
-    required this.category,
-    required this.targetDate,
-    required this.expectedSubmitDate,
-  });
+    required this.absoluteDeadline,
+    required this.desireDeadline,
+  }) : id = uuid.v4(); // Generate a unique ID for each task
 }

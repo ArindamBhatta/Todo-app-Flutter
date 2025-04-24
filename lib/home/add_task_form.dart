@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:todo/data/todo.dart';
+import 'package:intl/intl.dart';
 
 class AddTaskForm extends StatefulWidget {
   final Function(String title, ElementTask newTask) onAdd;
@@ -12,22 +13,22 @@ class AddTaskForm extends StatefulWidget {
 }
 
 class _AddTaskFormState extends State<AddTaskForm> {
+  //* Properties
   final _formKey = GlobalKey<FormState>();
-
   String title = 'Urgent Important';
   String name = '';
   String category = 'Office';
-
   DateTime startTime = DateTime.now();
-  DateTime deadline = DateTime.now().add(Duration(hours: 1));
-  DateTime targetDate = DateTime.now().add(Duration(days: 1));
-  DateTime expectedSubmitDate = DateTime.now().add(Duration(days: 2));
+  DateTime absoluteDeadline = DateTime.now().add(Duration(hours: 1));
+  DateTime desireDeadline = DateTime.now().add(Duration(days: 1));
+  Color currentColor = Colors.white;
+  late Color pickerColor;
 
-  Color currentColor = Colors.purple;
-  Color pickerColor = Colors.purple;
-
+  //* methods
   void changeColor(Color color) {
-    setState(() => pickerColor = color);
+    setState(() {
+      pickerColor = color;
+    });
   }
 
   Future<void> pickDateTime({
@@ -53,70 +54,141 @@ class _AddTaskFormState extends State<AddTaskForm> {
     }
   }
 
+  Widget _buildDateTimePicker({
+    required String label,
+    required DateTime value,
+    required VoidCallback onPressed,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(label),
+        subtitle: Text(DateFormat('MMM d, yyyy h:mm a').format(value)),
+
+        trailing: const Icon(Icons.calendar_today),
+        onTap: onPressed,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add New Task')),
+      appBar: AppBar(
+        title: Text('Add Task'),
+        backgroundColor: Colors.tealAccent,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: ListView(
-            children: [
-              DropdownButtonFormField<String>(
-                value: title,
-                items:
-                    [
-                          'Urgent Important',
-                          'Not Important Urgent',
-                          'Important Not Urgent',
-                          'Not Important Not Urgent',
-                        ]
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                onChanged: (val) => setState(() => title = val!),
-                decoration: const InputDecoration(labelText: "Quadrant Title"),
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Task Name'),
-                onChanged: (val) => name = val,
-                validator:
-                    (val) => val == null || val.isEmpty ? "Required" : null,
-              ),
-              DropdownButtonFormField<String>(
-                value: category,
-                items:
-                    [
-                          'Office',
-                          'Health',
-                          'Finance',
-                          'Home',
-                          'Personal',
-                          'Career',
-                          'Self Development',
-                          'Leisure',
-                          'Fun',
-                        ]
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                onChanged: (val) => setState(() => category = val!),
-                decoration: const InputDecoration(labelText: "Category"),
-              ),
-              const SizedBox(height: 16),
-              Text("Color Preview:"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - 200,
+              child: Column(
                 children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: currentColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButtonFormField<String>(
+                          value: title,
+                          items:
+                              [
+                                    'Urgent Important',
+                                    'Not Important Urgent',
+                                    'Important Not Urgent',
+                                    'Not Important Not Urgent',
+                                  ]
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (val) => setState(() => title = val!),
+                          decoration: const InputDecoration(
+                            labelText: "Urgency Level",
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        flex: 1,
+                        child: DropdownButtonFormField<String>(
+                          value: category,
+                          items:
+                              [
+                                    'Office',
+                                    'Health',
+                                    'Finance',
+                                    'Home',
+                                    'Personal',
+                                    'Career',
+                                    'Self',
+                                    'Leisure',
+                                    'Fun',
+                                  ]
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (val) => setState(() => category = val!),
+                          decoration: const InputDecoration(
+                            labelText: "Category",
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 16),
+                  //* Text Field
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Task Name'),
+                    onChanged: (val) => name = val,
+                    validator:
+                        (val) => val == null || val.isEmpty ? "Required" : null,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  _buildDateTimePicker(
+                    label: "Absolute Deadline",
+                    value: absoluteDeadline,
+                    onPressed:
+                        () => pickDateTime(
+                          initialDate: absoluteDeadline,
+                          onPicked:
+                              (dt) => setState(() {
+                                absoluteDeadline = dt;
+                              }),
+                        ),
+                  ),
+
+                  _buildDateTimePicker(
+                    label: "Desired Deadline",
+                    value: desireDeadline,
+                    onPressed:
+                        () => pickDateTime(
+                          initialDate: desireDeadline,
+                          onPicked:
+                              (dt) => setState(() {
+                                desireDeadline = dt;
+                              }),
+                        ),
+                  ),
+                  SizedBox(height: 16),
+
+                  //* Color Picker
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: currentColor,
+                    ),
                     onPressed: () {
                       pickerColor = currentColor;
                       showDialog(
@@ -145,89 +217,43 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     },
                     child: const Text('Choose Task Color'),
                   ),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('Add Task'),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          widget.onAdd(
+                            title,
+                            ElementTask(
+                              name: name,
+                              urgencyLevel: title,
+                              color: currentColor,
+                              isPending: false,
+                              startTime: startTime,
+                              absoluteDeadline: absoluteDeadline,
+                              category: category,
+                              desireDeadline: desireDeadline,
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
-
-              const SizedBox(height: 16),
-              _buildDateTimePicker(
-                label: "Start Time",
-                value: startTime,
-                onPressed:
-                    () => pickDateTime(
-                      initialDate: startTime,
-                      onPicked: (dt) => setState(() => startTime = dt),
-                    ),
-              ),
-              _buildDateTimePicker(
-                label: "Deadline",
-                value: deadline,
-                onPressed:
-                    () => pickDateTime(
-                      initialDate: deadline,
-                      onPicked: (dt) => setState(() => deadline = dt),
-                    ),
-              ),
-              _buildDateTimePicker(
-                label: "Target Date",
-                value: targetDate,
-                onPressed:
-                    () => pickDateTime(
-                      initialDate: targetDate,
-                      onPicked: (dt) => setState(() => targetDate = dt),
-                    ),
-              ),
-              _buildDateTimePicker(
-                label: "Expected Submit Date",
-                value: expectedSubmitDate,
-                onPressed:
-                    () => pickDateTime(
-                      initialDate: expectedSubmitDate,
-                      onPicked: (dt) => setState(() => expectedSubmitDate = dt),
-                    ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.check),
-                label: const Text("Add Task"),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    widget.onAdd(
-                      title,
-                      ElementTask(
-                        name: name,
-                        color: currentColor.value.toRadixString(16),
-                        isDone: false,
-                        startTime: startTime,
-                        deadline: deadline,
-                        category: category,
-                        targetDate: targetDate,
-                        expectedSubmitDate: expectedSubmitDate,
-                      ),
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildDateTimePicker({
-    required String label,
-    required DateTime value,
-    required VoidCallback onPressed,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(label),
-        subtitle: Text(value.toString()),
-        trailing: const Icon(Icons.calendar_today),
-        onTap: onPressed,
       ),
     );
   }
